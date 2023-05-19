@@ -6,8 +6,9 @@ using Microsoft.EntityFrameworkCore;
 namespace CodingWiki_DataAccess.Data;
 
 public class ApplicationDbContext : DbContext
-{
+{    
     public DbSet<Book> Books { get; set; }
+    public DbSet<MainBookDetails>  MainBookDetails { get; set; }
     public DbSet<Category> Categories { get; set; }
     public DbSet<Author> Authors { get; set; }
     public DbSet<SubCategory> SubCategories { get; set; }
@@ -22,10 +23,16 @@ public class ApplicationDbContext : DbContext
     public DbSet<Fluent_Publisher> Fluent_Publishers { get; set; }
     public DbSet<Fluent_BookAuthorMap> Fluent_BookAuthorMaps { get; set; }
 
+    public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : base(options)
+    {
+    }
+
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {
-        optionsBuilder.UseSqlServer("Server=LAPTOP-18553NB0;Database=CodingWiki;Trusted_Connection=True;MultipleActiveResultSets=True;TrustServerCertificate=True");
-                
+        //optionsBuilder.UseSqlServer("Server=LAPTOP-18553NB0;Database=CodingWiki;Trusted_Connection=True;MultipleActiveResultSets=True;TrustServerCertificate=True");
+        //optionsBuilder.UseSqlServer("Server=LAPTOP-18553NB0;Database=CodingWiki;Trusted_Connection=True;MultipleActiveResultSets=True;TrustServerCertificate=True")
+        //.LogTo(Console.WriteLine, new[] { DbLoggerCategory.Database.Command.Name },LogLevel.Information);
+
         base.OnConfiguring(optionsBuilder);
     }
 
@@ -89,6 +96,8 @@ public class ApplicationDbContext : DbContext
             new Publisher { Publisher_Id = 2, Name = "Pub 2 John", Location = "New York" },
             new Publisher { Publisher_Id = 3, Name = "Pub 3 Ben", Location = "Hawaii" }
             );
+
+        modelBuilder.Entity<MainBookDetails>().HasNoKey().ToView("GetOnlyBookDetails");
 
         base.OnModelCreating(modelBuilder);
     }
